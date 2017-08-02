@@ -1,6 +1,6 @@
-# freezerAlarmDigispark
-A open freezer alarm made with digispark arduino
+# freezerAlarmNano
+A open freezer alarm made with Arduino nano (168)
 
-Uses ky-024 magnetic hall sensor on pin 0, A mosfet on pin 1 to drive a warning led strip, and a ky-006 active buzzer on pin 3 for final alarm
+Uses ky-024 magnetic hall sensor on pin 7, 3 mosfet on pin 6, 9 and 10 to drive a warning rgb led strip, and a ky-006 active buzzer on pin 5 for final alarm
 
-if it does not detect a magnet close to the sensor for 5 minutes it lights up the led strip and after 10 minutes a beep patern starts until a magnet is detected (could also be a simple switch on pin 0)
+if it does not detect a magnet close to the sensor for 500 ms it lights up the led strip and fades from random color to random color for 10 minutes then it starts to beep until a magnet is detected (could also be a simple switch on pin 7)
