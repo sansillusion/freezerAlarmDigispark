@@ -1,20 +1,20 @@
 const int leson = 5;
-const int aimant = 2;
+const int aimant = 7;
 int rouge = 0;
 int vert = 0;
 int bleu = 0;
-const int pinrouge = 0;
-const int pinverte = 1;
-const int pinbleu = 4;
+const int pinrouge = 6;
+const int pinverte = 9;
+const int pinbleu = 10;
 long r = 0;
 long g = 0;
 long b = 0;
 unsigned long previousMillisr = 0;
 unsigned long previousMillisg = 0;
 unsigned long previousMillisb = 0;
-int attendR = 70;
-int attendG = 70;
-int attendB = 70;
+int attendR = 40;
+int attendG = 45;
+int attendB = 50;
 unsigned long previousMillisf = 0;
 int attendF = 700;
 unsigned long flashfois = 0;
@@ -22,25 +22,22 @@ unsigned long flashrendu = 0;
 int faitdubruit = 0;
 int bruit = 0;
 
+int lerouge = 255;
+int levert = 255;
+int lebleu = 255;
 unsigned long previousMillis = 0;
 unsigned long previousMillison = 0;
-const long interval = 1000; // interval pour les leds en ms
-const long intervalson = 600000; // interval pour le son en ms
+long interval = 500; // interval pour les leds en ms
+const long intervalson = 300000; // interval pour le son en ms
 
 void flashfunk() {
   if (flashrendu <= flashfois) {
     flashrendu++;
     if (bruit == 1) {
       digitalWrite(leson, LOW);
-      digitalWrite(pinrouge, LOW);
-      digitalWrite(pinverte, LOW);
-      digitalWrite(pinbleu, LOW);
       bruit = 0;
     } else {
       digitalWrite(leson, HIGH);
-      digitalWrite(pinrouge, HIGH);
-      digitalWrite(pinverte, HIGH);
-      digitalWrite(pinbleu, HIGH);
       bruit = 1;
     }
   } else {
@@ -50,7 +47,6 @@ void flashfunk() {
     flashrendu = 0;
   }
 }
-
 
 void fadeR() {
   if (rouge < r) {
@@ -83,6 +79,7 @@ void fadeB() {
 }
 
 void setup() {
+  bitSet(TCCR1B, WGM12); //fix pwm on nano
   pinMode(pinrouge, OUTPUT);
   pinMode(pinverte, OUTPUT);
   pinMode(pinbleu, OUTPUT);
@@ -92,6 +89,9 @@ void setup() {
   digitalWrite(pinverte, LOW);
   digitalWrite(pinbleu, LOW);
   digitalWrite(leson, LOW);
+  lerouge = random(1, 255);
+  levert = random(1, 255);
+  lebleu = random(1, 255);
 }
 
 void loop() {
@@ -100,14 +100,19 @@ void loop() {
   if (ouvert == LOW) {
     currentMillis = millis();
     if (currentMillis - previousMillis >= interval) {
-      r = 255;
-      int lintvert = interval + 1000;
+      r = lerouge;
+      int lintvert = interval + 4000;
       if (currentMillis - previousMillis >= lintvert) {
-        g = 255;
+        g = levert;
       }
-      int lintbleu = interval + 2000;
+      int lintbleu = interval + 8000;
       if (currentMillis - previousMillis >= lintbleu) {
-        b = 255;
+        b = lebleu;
+        previousMillis = currentMillis;
+        lerouge = random(1, 255);
+        levert = random(1, 255);
+        lebleu = random(1, 255);
+        interval = 16000;
       }
     }
     currentMillis = millis();
@@ -115,13 +120,14 @@ void loop() {
       faitdubruit = 1;
       flashrendu = 0;
       flashfois = 0;
-      digitalWrite(pinrouge, HIGH);
-      digitalWrite(pinverte, HIGH);
-      digitalWrite(pinbleu, HIGH);
+      analogWrite(pinrouge, 255);
+      analogWrite(pinverte, 255);
+      analogWrite(pinbleu, 255);
       delay(500);
-      digitalWrite(pinrouge, LOW);
-      digitalWrite(pinverte, LOW);
-      digitalWrite(pinbleu, LOW);
+      analogWrite(pinrouge, 0);
+      analogWrite(pinverte, 0);
+      analogWrite(pinbleu, 0);
+      delay(500);
       int lintson = interval + 5000;
       if (currentMillis - previousMillis >= lintson) {
         flashrendu = 0;
@@ -129,24 +135,23 @@ void loop() {
       }
     }
   } else {
-//    digitalWrite(pinrouge, LOW);
-//    digitalWrite(pinverte, LOW);
-//    digitalWrite(pinbleu, LOW);
+    analogWrite(pinrouge, 0);
+    analogWrite(pinverte, 0);
+    analogWrite(pinbleu, 0);
     digitalWrite(leson, LOW);
     previousMillis = currentMillis;
     previousMillison = currentMillis;
+    rouge = 0;
+    vert = 0;
+    bleu = 0;
     r = 0;
     g = 0;
     b = 0;
     flashrendu = 0;
     flashfois = 0;
     faitdubruit = 0;
+    interval = 500;
   }
-
-
-
-
-
   if (faitdubruit == 1) {
     currentMillis = millis();
     if (currentMillis - previousMillisf >= attendF) {
@@ -159,7 +164,6 @@ void loop() {
       if (currentMillis - previousMillisr >= attendR) {
         fadeR();
         previousMillisr = currentMillis;
-        attendR = fadecomment(rouge);
       }
     }
     if (g != vert) {
@@ -167,7 +171,6 @@ void loop() {
       if (currentMillis - previousMillisg >= attendG) {
         fadeG();
         previousMillisg = currentMillis;
-        attendG = fadecomment(vert);
       }
     }
     if (b != bleu) {
@@ -175,27 +178,7 @@ void loop() {
       if (currentMillis - previousMillisb >= attendB) {
         fadeB();
         previousMillisb = currentMillis;
-        attendB = fadecomment(bleu);
       }
     }
   }
-}
-
-int fadecomment(int claire) {
-  int combien = 70;
-  if (claire > 0)
-    combien = 90;
-  if (claire > 40)
-    combien = 80;
-  if (claire > 80)
-    combien = 60;
-  if (claire > 100)
-    combien = 40;
-  if (claire > 120)
-    combien = 30;
-  if (claire > 140)
-    combien = 20;
-  if (claire > 180)
-    combien = 9;
-  return combien;
 }
