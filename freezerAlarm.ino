@@ -117,9 +117,6 @@ void loop() {
     }
     currentMillis = millis();
     if (currentMillis - previousMillison >= intervalson) {
-      faitdubruit = 1;
-      flashrendu = 0;
-      flashfois = 0;
       analogWrite(pinrouge, 255);
       analogWrite(pinverte, 255);
       analogWrite(pinbleu, 255);
@@ -130,6 +127,7 @@ void loop() {
       delay(500);
       int lintson = intervalson + 15000;
       if (currentMillis - previousMillison >= lintson) {
+        faitdubruit = 1;
         flashrendu = 0;
         flashfois = 10000;
       }
