@@ -31,7 +31,7 @@ long interval = 500; // interval pour les leds en ms
 const long intervalson = 300000; // interval pour le son en ms
 
 void flashfunk() {
-  if (flashrendu <= flashfois) {
+  if (flashrendu < flashfois) {
     flashrendu++;
     if (bruit == 1) {
       digitalWrite(leson, LOW);
@@ -128,8 +128,8 @@ void loop() {
       analogWrite(pinverte, 0);
       analogWrite(pinbleu, 0);
       delay(500);
-      int lintson = interval + 5000;
-      if (currentMillis - previousMillis >= lintson) {
+      int lintson = intervalson + 15000;
+      if (currentMillis - previousMillison >= lintson) {
         flashrendu = 0;
         flashfois = 10000;
       }
