@@ -29,9 +29,10 @@ unsigned long previousMillis = 0;
 unsigned long previousMillison = 0;
 long interval = 500; // interval pour les leds en ms
 const long intervalson = 300000; // interval pour le son en ms
+const long lintson = 315000;
 
 void flashfunk() {
-  if (flashrendu < flashfois) {
+  if (flashrendu <= flashfois) {
     flashrendu++;
     if (bruit == 1) {
       digitalWrite(leson, LOW);
@@ -88,6 +89,8 @@ void setup() {
   digitalWrite(pinrouge, LOW);
   digitalWrite(pinverte, LOW);
   digitalWrite(pinbleu, LOW);
+  //      digitalWrite(leson, HIGH);
+  //delay(500);
   digitalWrite(leson, LOW);
   lerouge = random(1, 255);
   levert = random(1, 255);
@@ -101,11 +104,11 @@ void loop() {
     currentMillis = millis();
     if (currentMillis - previousMillis >= interval) {
       r = lerouge;
-      int lintvert = interval + 4000;
+      long lintvert = interval + 4000;
       if (currentMillis - previousMillis >= lintvert) {
         g = levert;
       }
-      int lintbleu = interval + 8000;
+      long lintbleu = interval + 8000;
       if (currentMillis - previousMillis >= lintbleu) {
         b = lebleu;
         previousMillis = currentMillis;
@@ -125,11 +128,17 @@ void loop() {
       analogWrite(pinverte, 0);
       analogWrite(pinbleu, 0);
       delay(500);
-      int lintson = intervalson + 15000;
       if (currentMillis - previousMillison >= lintson) {
         faitdubruit = 1;
-        flashrendu = 0;
         flashfois = 10000;
+        analogWrite(pinrouge, 255);
+        analogWrite(pinverte, 255);
+        analogWrite(pinbleu, 255);
+        delay(200);
+        analogWrite(pinrouge, 0);
+        analogWrite(pinverte, 0);
+        analogWrite(pinbleu, 0);
+        delay(200);
       }
     }
   } else {
